@@ -1,4 +1,3 @@
-(function() {
 var library = {
 	id:"Library",
 
@@ -24,7 +23,7 @@ var library = {
 			{
 			label:"RegEx engine",
 			desc:"While the core feature set of regular expressions is fairly consistent, different implementations (ex. Perl vs Java) may have different features or behaviours."+
-				"<p>RegExr uses your browser's RegExp engine for matching, and its syntax highlighting and documentation reflect the Javascript RegExp standard.</p>"
+				"<p>RegExr uses your browser's RegExp engine for matching, and its syntax highlighting and documentation reflect the JavaScript RegExp standard.</p>"
 			},
 			{
 			id:"infinite",
@@ -540,7 +539,7 @@ var errors = {
 	esccharopen:"Dangling backslash.",
 	quantrev:"Quantifier minimum is greater than maximum.",
 	rangerev:"Range values reversed. Start char is greater than end char.",
-	lookbehind:"Lookbehind is not supported in Javascript.",
+	lookbehind:"Lookbehind is not supported in JavaScript.",
 	fwdslash:"Unescaped forward slash.",
 	esccharbad:"Invalid escape sequence."
 
@@ -570,6 +569,4 @@ for (i=0; i<kids.length; i++) {
 }
 //*/
 
-window.documentation = {library:library, misc:misc, errors:errors};
-
-})();
+module.exports = {library:library, misc:misc, errors:errors};

@@ -28,3 +28,5 @@ build/
 #-----------------------------
 _db.php
 regexr.css
+*.map
+scripts.min.js

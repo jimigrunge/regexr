@@ -55,17 +55,41 @@ var library = {
 				"<p>Lighter colored caps at the start or end of a line indicate the match continues between lines.</p>"
 			},
 			{
-			label:"Substitution panel",
-			desc:"Click the <b>Substitution</b> title bar below the <b>Text</b> panel to show or hide the <b>Substitution</b> panel."+
-				"<p>Matches in the <b>Text</b> panel are replaced by the substitution string & displayed as you type.</p>"+
-				"<p>Escaped characters compatible with the JS string format are supported, such as <code>\\n</code>, <code>\\t</code> & <code>\\u0009</code>.</p>"+
-				"<p>Roll over tokens in the substitution string for information.</p>"
+			label:"Tools panel",
+			desc:"Click the <b>Tools</b> title bar below the <b>Text</b> panel to show or hide the <b>Tools</b> panel."+
+				"<p>Tools provide different ways of working with or investigating your results.</p>",
+			kids: [
+				{
+				label:"Replace",
+				desc:"The <b>Replace</b> tool replaces matches with a specified string or pattern."+
+					"<p>Matches in the <b>Text</b> panel are replaced by the substitution string & displayed as you type.</p>"+
+					"<p><a href='javascript:showLib(\"subst\")'>Substitution tokens</a> (ex. <code>$&</code> or <code>$1</code>) and escaped characters compatible with the JS string format are supported, such as <code>\\n</code>, <code>\\t</code> & <code>\\u0009</code>.</p>"+
+					"<p>Roll over tokens for information.</p>"
+				},
+				{
+				label:"List",
+				desc:"The <b>List</b> tool lists all found matches."+
+					"<p>You can specify either a simple delimiter (ex. <code>,</code> or <code>\\n</code>), or use <a href='javascript:showLib(\"subst\")'>substitution tokens</a> to generate more advanced reports. For example, <code>$1\\n</code> would list all group 1 results.</p>"+
+					"<p>Escaped characters compatible with the JS string format are supported, such as <code>\\n</code>, <code>\\t</code> & <code>\\u0009</code>.</p>"+
+					"<p>Roll over tokens for information.</p>"
+				},
+				{
+				label:"Details",
+				desc:"The <b>Details</b> tool displays the full text of a match and it's capture groups."+
+					"<p>Click on a highlighted match in the <b>Text</b> panel to display details for that match.</p>"
+				},
+				{
+				label:"Explain",
+				desc:"The <b>Explain</b> tool displays a detailed breakdown of the <b>Expression</b>."+
+					"<p>Mouse over the explanation to highlight the related tokens in the <b>Expression</b> panel.</p>"
+				}
+			]
 			},
 			{
 			label:"Library panel",
-			desc:"The <b>Library</b> includes help content and a reference that includes info on all regular expression tokens and flags."+
+			desc:"The <b>Library</b> (this panel) includes <b>help</b> content and a <b>reference</b> that includes info on all regular expression tokens and flags."+
 				"<p>Tap a selected item in the reference to insert it into your <b>Expression</b>. Click the <span class='icon'>&#xE212;</span> beside an example to load it.</p>"+
-				"<p>The library also includes example patterns, searchable community submissions, and your saved favourites.</p>"
+				"<p>The library also includes <b>example</b> patterns, searchable <b>community</b> submissions, and your saved <b>favourites</b>.</p>"
 			}
 		]
 		},
@@ -352,7 +376,8 @@ var library = {
 			{
 			label: "Substitution",
 			desc: "These tokens are used in a substitution string to insert different parts of the match.",
-			target:"subst",
+			target: "subst",
+			id:"subst",
 			kids: [
 				{
 				id:"subst_match",
@@ -548,14 +573,14 @@ var errors = {
 
 /*
 // add the "All" reference section. This is kind of fragile at the moment.
-kids = reference.kids;
+kids = library.kids;
 kids.unshift({
 	label: "All",
 	desc: "All RegEx tokens supported in JS. Does not include Substitution or Flags.",
 	kids: []
 	});
 var all = kids[0].kids;
-for (i=0; i<kids.length; i++) {
+for (var i=0; i<kids.length; i++) {
 	if (kids[i].target) { continue; }
 	var entries = kids[i].kids;
 	for (var j=0; j<entries.length; j++) {

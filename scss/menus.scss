@@ -16,6 +16,38 @@
 		min-width: 10rem;
 	}
 
+    &.share {
+      min-width: 200px;
+
+      input[type="text"] {
+        @include calc("width", "100% - 0.375em*6");
+        float: left;
+      }
+
+      #savePrompt > p {
+        @include calc("margin-bottom", "-0.375em");
+      }
+
+      header:not(:first-child) {
+        @include calc("padding-top", "0.375em*4");
+      }
+
+      .public-wrap {
+        padding-top: .5rem;
+      }
+
+      .share-wrap {
+        width: 100%;
+      }
+
+      .icon {
+        @include calc("padding-top", "0.375em*2");
+        @include calc("padding-left", "100% - 0.375em*3");
+        @include calc("width", "100% - 0.375em*6");
+        cursor: pointer;
+      }
+    }
+
 	&.save, &.share {
 		label {
 			display: inline-block;
@@ -34,10 +66,6 @@
 			&:hover {
 				color: $hover-color;
 			}
-		}
-
-	  	.public-wrap {
-		  padding-top: .5rem;
 		}
 
 	  	input[type="checkbox"] {
@@ -59,7 +87,7 @@
 			float: left;
 			padding-top: 0rem;
 
-			height: 0.0;
+			height: 0;
 			@include vendor-prefix(transition, height $default-transition-duration);
 		}
 
@@ -70,7 +98,6 @@
 		}
 
 		.sub-header {
-			margin-top: -.5rem;
 			font-size: .75rem;
 			color: $grey;
 		}
@@ -87,7 +114,7 @@
 
 			overflow: hidden;
 
-			height: 0.0;
+			height: 0;
 			@include vendor-prefix(transition, height $default-transition-duration);
 		}
 

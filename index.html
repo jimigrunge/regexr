@@ -13,6 +13,8 @@
 	<link rel="shortcut icon" href="/favicon.ico" type="image/vnd.microsoft.icon" />
 	<link rel="shortcut icon" href="/assets/favicon.png" type="image/png" />
 
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+
 	<meta name=viewport content="width=device-width, initial-scale=1, user-scalable=yes">
 
 	<meta name="description" content="Regular expression tester with syntax highlighting, contextual help, video tutorial, reference, and searchable community patterns." />
@@ -55,7 +57,7 @@
 <body>
 
 <div class="top">
-	<h1 class="icon regexr-logo">&#xE600;</h1><h1 class="regexr-text">RegExr</h1><span class="version regexr-text">v2.0<span class="beta-banner hidden">BETA</span></span>
+	<h1 class="icon regexr-logo">&#xE600;</h1><h1 class="regexr-text">RegExr</h1><span class="version regexr-text">v2.1<span class="beta-banner hidden">BETA</span></span>
 	<div class="links">
 		by <a href="http://twitter.com/gskinner/" target="_blank">gskinner</a>
 		<a href="./v1/" target="_blank">RegExr v1</a>
@@ -103,11 +105,11 @@
 					<hr/>
 				</div>
 
-				<div class="substitution-wrap">
-					<h1 class="substitution-title">Substitution</h1>
+				<div class="tool-wrap">
+					<h1 class="tool-label"></h1>
 					<hr/>
-					<div class='load icon subst'></div>
-					<code class="substitution"></code>
+					<div class='load icon tool'></div>
+					<code class="tool tool-content"></code>
 				</div>
 			</div>
 		</div>
@@ -124,7 +126,8 @@
 			<li>Results update in <b>real-time</b> as you type.</li>
 			<li><b>Roll over</b> a match or expression for details.</li>
 			<li><b>Save</b> & <b>share</b> expressions with others.</li>
-			<li>Explore the <b>Library</b> for help & examples.</li>
+			<li>Use <b>Tools</b> to explore your results.</li>
+			<li>Browse the <b>Library</b> for help & examples.</li>
 			<li><b>Undo</b> & <b>Redo</b> with {{getCtrlKey()}}-Z / Y.</li>
 			<li>Search for & rate <b>Community</b> patterns.</li>
 		</ul>
@@ -167,7 +170,7 @@
 	</div>
 </div>
 
-<div class="doc subst-disabled" id="docview">
+<div class="doc tools-disabled" id="docview">
 	<div class="title expr">
 		Expression
 		<ul class="buttonbar">
@@ -185,9 +188,9 @@
 		<div class="measure"></div>
 		<canvas class="canvas" width="1" height="1"></canvas>
 		<textarea class="default">
-Welcome to RegExr v2.0 by gskinner.com!
+Welcome to RegExr v2.1 by gskinner.com!
 
-Edit the Expression & Text to see matches. Roll over matches or the expression for details. Undo mistakes with {{ctrl}}-z. Save & Share expressions with friends or the Community. A full Reference & Help is available in the Library, or watch the video Tutorial.
+Edit the Expression & Text to see matches. Roll over matches or the expression for details. Undo mistakes with {{ctrl}}-z. Save Favorites & Share expressions with friends or the Community. Explore your results with Tools. A full Reference & Help is available in the Library, or watch the video Tutorial.
 
 Sample text for testing:
 abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ
@@ -200,15 +203,24 @@ http://regexr.com/foo.html?q=bar
 		</textarea>
 	</div>
 
-	<div class="title subst">
-		Substitution
-		<ul class="buttonbar">
-			<li class="button nolabel" data-icon="&#xE192;" data-alticon="&#xE191;"></li>
+	<div class="title tools">
+		<span>Tools</span>
+		<ul class="buttonbar right">
+			<li class="button nolabel expand" data-icon="&#xE192;" data-alticon="&#xE191;"></li>
+		</ul>
+		<ul class="buttonbar left">
+            <!-- If these labels are changed, also update Favorites.js -->
+			<li class="button replace active" data-tool="replace">Replace</li>
+			<li class="button list" data-tool="list">List</li>
+			<li class="button details" data-tool="details">Details</li>
+			<li class="button explain" data-tool="explain">Explain</li>
 		</ul>
 	</div>
-	<div class="editor subst"></div>
-
-	<div class="editor substres"></div>
+	
+	<div class="tools editor replace"></div>
+	<div class="tools editor list"></div>
+	<div class="tools editor out"></div>
+	<div class="tools results"><div class="content"></div></div>
 
 	<div class="menu flags">
 		<header>
@@ -223,37 +235,48 @@ http://regexr.com/foo.html?q=bar
 	</div>
 
 	<div class="menu share">
-		<header>
-			Share
-		</header>
-		<hr />
-		<div id="shareLinkView">
-			<input type="text" id="shareLinkTxt">
-			<a id="shareCopyLink">Copy Link<br/><br/></a>
-			<p id="noFlashCopyText">Press <span class="copyKeyLabel">Ctrl</span>+C to copy your link.</p>
-		</div>
-		<div id="saveView">
+		<div id="savePrompt">
 			<p><a id="showSaveLink">Save</a> your pattern before sharing.</p>
 		</div>
-		<header>Copy</header>
-		<hr />
-		<a id="copyExpression">Expression</a>
-		|
-		<a id="copyPattern">Pattern</a>
-		|
-		<a id="copyJavascript">Javascript</a>
-		<div id="copyMessageView" class="hidden">
-			<hr />
-			<code id="copyTxt"></code><br/>
-			Copied to clipboard.
-		</div>
 
-		<div id="noFlashCopyView" class="hidden">
-			<hr />
-			<input id="noFlashCopyInput" type="text"><br/>
-			Press <span class="copyKeyLabel">dynamic</span>-C to copy.
-		</div>
-	</div>
+        <div class="share-wrap">
+            <header>
+                Share
+            </header>
+            <hr />
+            <div id="shareLinkView" class="share-wrap">
+                <input type="text" id="shareLinkTxt" readonly>
+                <div data-clipboard-target="#shareLinkTxt" class="icon share-link-btn">&#xE603;</div>
+            </div>
+        </div>
+
+            <header>
+                Expression
+            </header>
+            <hr />
+            <div id="shareExpressionView" class="share-wrap">
+                <input type="text" id="shareExpressionTxt" readonly>
+                <div class="icon share-expression-btn" data-clipboard-target="#shareExpressionTxt">&#xE603;</div>
+            </div>
+
+            <header>
+                Pattern
+            </header>
+            <hr />
+            <div id="sharePatternView" class="share-wrap">
+                <input type="text" id="sharePatternTxt" readonly>
+                <div class="icon share-pattern-btn" data-clipboard-target="#sharePatternTxt">&#xE603;</div>
+            </div>
+
+            <header>
+                Javascript
+            </header>
+            <hr />
+            <div id="shareJavascriptView" class="share-wrap">
+                <input type="text" id="shareJavascriptTxt" readonly>
+                <div class="icon share-javascript-btn" data-clipboard-target="#shareJavascriptTxt">&#xE603;</div>
+            </div>
+        </div>
 
 	<div class="menu save">
 		<header>
@@ -314,14 +337,14 @@ http://regexr.com/foo.html?q=bar
 	*******************************
 	It's required so we can play and pause the video.
 	-->
-	<iframe width="854" height="510" src="//www.youtube.com/embed/fOH62XXGdLs?enablejsapi=1" frameborder="0" allowfullscreen></iframe>
+	<iframe width="854" height="510" frameborder="0" allowfullscreen></iframe>
 </div>
 
 <!-- White spinner with an #242429 background. Used in the Community and Favourites header. -->
-<img class="hidden spinner" src="data:image/gif;base64,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" />
+<img class="hidden spinner" src="assets/spinner.gif" inline />
 
 <!-- White spinner used in the community search. -->
-<img class="hidden spinner white" src="data:image/gif;base64,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" />
+<img class="hidden spinner white" src="assets/spinnerWhite.gif" inline />
 
 <div class="not-supported-mobile hidden">
 	<div class="top">
@@ -337,7 +360,7 @@ http://regexr.com/foo.html?q=bar
 	<div class="top">
 		<h1 class="icon regexr-logo">&#xE600;</h1>
 
-		<h1 class="regexr-text">RegExr</h1><span class="version regexr-text">v2.0</span>
+		<h1 class="regexr-text">RegExr</h1><span class="version regexr-text">v2.1</span>
 	</div>
 	<div class="content">
 		<p>RegExr requires a modern browser. Please update your browser to the latest version and try again.</p>
@@ -349,33 +372,8 @@ http://regexr.com/foo.html?q=bar
 To fix showing the "Not supported" screen in IE 7 (and other old browsers).
 Since our initial load can cause errors, we just catch them and show the overlay if they happen.
 -->
-<script>
-	var el;
-	if (!$.isSupported()) {
-		el = document.querySelector(".not-supported");
-		$.removeClass(el, "hidden");
-		if (!ZeroClipboard.state().flash.disabled) {
-			var flash = document.getElementsByClassName('flash')[0];
-			flash.className = "";
-		}
-	} else if($.partialSupport()) {
-		el = document.querySelector(".not-supported-mobile");
-		$.removeClass(el, "hidden");
-		$.el("#closeOverlay").addEventListener("click", function() {
-			$.addClass(el, "hidden");
-		});
-	}
-</script>
-
-<script>
-	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-		m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-	ga('create', 'UA-3579542-6', 'regexr.com');
-	ga('send', 'pageview', '/');
-</script>
+<script src="js/checkSupport.template.js" inline></script>
+<script src="js/analytics.template.js" inline></script>
 
 <script src="js/index.template.js" inline></script>
 </body>

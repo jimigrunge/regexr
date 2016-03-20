@@ -4,7 +4,7 @@ $monospace: 'Source Code Pro', monospace;
 $icon-font: "Glyphicons";
 
 $pad: 0.75rem;
-$grey: #80808F; /* #80808F */
+$grey: #808393; /* #80808F */
 $theme-color: #66CCFF; /* #66CCFF */
 $color: darken($grey, 47%);
 $white: lighten($grey, 49%);
@@ -13,6 +13,9 @@ $error-color: red;
 $default-transition-duration: 0.3s;
 $cta-transition-duration: 1.5s;
 $placeholder-color: darken($grey, 20%);
+
+$group-color: #00EE00;
+$set-color: #FFF600;
 
 $top-bg: darken($grey, 45%);
 $top-color: $grey;
@@ -31,8 +34,8 @@ $editor-h-pad: $editor-height + $pad*2;
 $editor-1l-pad-bottom: 0rem;
 $editor-1l-height: $editor-height + $pad - $editor-1l-pad-bottom;
 
-$subst-border: 1px;
-$editor-substres-bg: darken($editor-bg, 3%);
+$tools-border: 1px;
+$editor-toolsres-bg: darken($editor-bg, 3%);
 
 $lib-bg: darken($grey, 34%);
 $lib-title-bg: darken($grey, 38%);

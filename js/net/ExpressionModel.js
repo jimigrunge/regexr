@@ -44,12 +44,12 @@ s.savePattern = function (tags, name, pattern, content, replace, description, au
 };
 
 s.saveState = function () {
-	s._saveState = s.getState();
+	s._saveState = s.docView.getStateHash();
 	s._lastId = null;
 };
 
 s.isDirty = function () {
-	var dirty = s._saveState !== s.getState();
+	var dirty = s._saveState !== s.docView.getStateHash();
 	if (dirty && s.id) {
 		s._lastId = s.id;
 		s.id = null;
@@ -58,14 +58,6 @@ s.isDirty = function () {
 	}
 
 	return dirty;
-};
-
-s.getState = function () {
-	var state =
-			s.docView.getExpression() +
-			s.docView.getText() +
-			s.docView.getSubstitution();
-	return state;
 };
 
 s.handleSaveSuccess = function (result) {

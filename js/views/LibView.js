@@ -53,6 +53,11 @@ p.initialize = function (element, docs) {
 
 	this.buildUI(element);
 	this.showItem(this.docs = docs);
+	
+	var _this = this;
+	window.showLib = function(id) {
+		_this.show(id);
+	}
 };
 
 // public:
@@ -182,7 +187,6 @@ p.onListChange = function (evt) {
 		} // alternately: .toggleFlag(item.token);
 		else if (target == "subst") {
 			this.docView.insertSubstitution(item.token.replace(/\$\$/g, "$"));
-			this.docView.showSubstitution();
 		}
 	} else {
 		this.showItem(item, true);

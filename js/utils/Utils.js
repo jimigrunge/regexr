@@ -37,9 +37,12 @@ Utils.els = function (query, element) {
 };
 
 Utils.removeClass = function (element, className) {
-	var names = className.split(" ");
-	for (var i = 0; i < names.length; i++) {
-		element.classList.remove(names[i]);
+	if (className instanceof RegExp) {
+		var arr = element.className.split(" "), re=className;
+		element.className = arr.filter(function(s) { return !re.test(s); }).join(" ");
+	} else {
+		var list = element.classList;
+		list.remove.apply(list, className.split(" "));
 	}
 	return element;
 };
@@ -304,13 +307,14 @@ Utils.getCtrlKey = function () {
 };
 
 /*
- Remove al children from a element.
+ Remove all children from a element.
  When using .innerHTML = ""; IE fails when adding new dom elements via appendChild();
  */
 Utils.empty = function (el) {
 	while (el.firstChild) {
 		el.removeChild(el.firstChild);
 	}
+	return el;
 };
 
 Utils.html = function (value, parent) {
@@ -320,8 +324,30 @@ Utils.html = function (value, parent) {
 };
 
 Utils.htmlDecode = function(value) {
-    var el = Utils.html(value);
-    return el.nodeValue;
+	var el = Utils.html(value);
+	return el.nodeValue;
+};
+
+Utils.div = function(content, className) {
+	var div = document.createElement("div");
+	if (content) { div.innerHTML = content; }
+	if (className) { div.className = className; }
+	return div;
+};
+
+/**
+ * Implementation of Java’s String.hashCode() method
+ * Original Source: http://werxltd.com/wp/2010/05/13/javascript-implementation-of-javas-string-hashcode-method/
+ *
+ * @param s
+ * @returns {number}
+ */
+Utils.getHashCode = function(s) {
+	var hash = 0, l = s.length, i;
+	for (i = 0; i < l; i++ ) {
+		hash = ((hash << 5) - hash) + s.charCodeAt(i) | 0;
+	}
+	return hash;
 };
 
 module.exports = Utils;

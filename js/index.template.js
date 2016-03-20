@@ -51,16 +51,6 @@
 			$.removeClass($.el(".beta-banner"), "hidden");
 		}
 
-		// Setup our copy functionality.
-		ZeroClipboard.config(
-				{
-					swfPath: "assets/ZeroClipboard.swf",
-					cacheBust: false,
-					forceHandCursor: true,
-					hoverClass: 'a-hover'
-				}
-		);
-
 		RegExrShared.List.spinner = $.el(".spinner");
 
 		var docView = new RegExrShared.DocView($.el("#docview"));
@@ -75,7 +65,7 @@
 		cheatsheet.style.display = "none";
 		RegExrShared.Docs.getItem("cheatsheet").desc = cheatsheet.innerHTML;
 
-		docView.setExpression(RegExrShared.DocView.DEFAULT_EXPRESSION).setSubstitution(RegExrShared.DocView.DEFAULT_SUBSTITUTION);
+		docView.setExpression().setState();
 		docView.resetHistory();
 
 		var libView = new RegExrShared.LibView($.el("#libview"), RegExrShared.Docs.content.library);
@@ -148,8 +138,13 @@
 			RegExrShared.ServerModel.getPatternByID(id).then(function (data) {
 				RegExrShared.ExpressionModel.setLastSave(data);
 				var pattern = $.parsePattern(data.pattern);
-				_this.docView.setState(data.state != null && data.state != "" ? JSON.parse(data.state) : {});
-				_this.docView.populateAll(pattern.ex, pattern.flags, data.content, data.replace);
+				var state = data.state;
+				// legacy support:
+				if (state && data.replace) {
+					state.toolValue = data.replace;
+					state.tool = "replace";
+				}
+				_this.docView.populateAll(pattern.ex, pattern.flags, data.content, state);
 			}, function () {
 				RegExrShared.BrowserHistory.go();
 			});
@@ -162,6 +157,8 @@
 		var func = null;
 		var el = $.el(".video");
 		if (value !== false) {
+			var iframe = $.el("iframe", el);
+			if (!iframe.src) { iframe.src =  "//www.youtube.com/embed/fOH62XXGdLs?enablejsapi=1&autoplay=1"; }
 			$.removeClass(el, "hidden");
 			el.addEventListener("click", this.handleVideoCloseProxy);
 			func = "playVideo";
@@ -185,47 +182,47 @@
 })();
 
 function createRegExr() {
-    if (window.regexr == null) {
-        window.regexr = new window.RegExr();
-    }
+	if (window.regexr == null) {
+		window.regexr = new window.RegExr();
+	}
 }
 
 if (window["WebFont"] != null) {
-    try {
-        WebFont.load({
-            google: {
-                families: ["Source Code Pro:400,700", "Cabin:400,700"],
-                fontinactive: function (family, fvd) {
-                    WebFont.load({
-                        custom: {
-                            families: ["Source Code Pro:400,700", "Cabin:400,700"]
-                        }
-                    });
-                }
-            },
-            active: function () {
-                xhr.abort();
-                createRegExr();
-            }
-        });
+	try {
+		WebFont.load({
+			google: {
+				families: ["Source Code Pro:400,700", "Cabin:400,700"],
+				fontinactive: function (family, fvd) {
+					WebFont.load({
+						custom: {
+							families: ["Source Code Pro:400,700", "Cabin:400,700"]
+						}
+					});
+				}
+			},
+			active: function () {
+				xhr.abort();
+				createRegExr();
+			}
+		});
 
-        // wdg:: Fix for https://github.com/gskinner/regexr/issues/111
-        // If the cors header is non-existent WebFont will silently fail, so we manually check to see if font can be loaded.
-        // and if not, just show the site.
-        var xhr = window.XDomainRequest == null?new XMLHttpRequest():new XDomainRequest();
-        xhr.onerror = function(evt) {
-            createRegExr();
-        };
-        xhr.open('get', 'http://fonts.gstatic.com/s/sourcecodepro/v6/leqv3v-yTsJNC7nFznSMqZkF8H8ye47wsfpWywda8og.woff2');
-        xhr.send();
+		// wdg:: Fix for https://github.com/gskinner/regexr/issues/111
+		// If the cors header is non-existent WebFont will silently fail, so we manually check to see if font can be loaded.
+		// and if not, just show the site.
+		var xhr = window.XDomainRequest == null?new XMLHttpRequest():new XDomainRequest();
+		xhr.onerror = function(evt) {
+			createRegExr();
+		};
+		xhr.open('get', 'http://fonts.gstatic.com/s/sourcecodepro/v6/leqv3v-yTsJNC7nFznSMqZkF8H8ye47wsfpWywda8og.woff2');
+		xhr.send();
 
-        // final fall back, if all other fall backs fail
-        setTimeout(function() {
-            createRegExr();
-        }, 500);
-    } catch (err) {
-        createRegExr();
-    }
+		// final fall back, if all other fall backs fail
+		setTimeout(function() {
+			createRegExr();
+		}, 500);
+	} catch (err) {
+		createRegExr();
+	}
 } else {
-    createRegExr();
+	createRegExr();
 }

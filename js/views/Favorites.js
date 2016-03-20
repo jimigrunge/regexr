@@ -57,9 +57,9 @@ p.init = function (element, content) {
 	this.previewWrap = $.el(".preview-wrap", this.contentTemplate);
 	this.preview = $.el(".preview", this.contentTemplate);
 
-	this.substitutionWrap = $.el(".substitution-wrap", this.contentTemplate);
-	this.substitutionTitle = $.el(".substitution-title", this.contentTemplate);
-	this.substitution = $.el(".substitution", this.contentTemplate);
+	this.toolWrap = $.el(".tool-wrap", this.contentTemplate);
+	this.toolContent = $.el(".tool-content", this.contentTemplate);
+	this.toolTitle = $.el(".tool-label", this.contentTemplate);
 
 	this.favoriteBtn = $.el(".favorite", this.contentTemplate);
 	this.favoriteBtn.addEventListener("mouseover", $.bind(this, this.handleFavoriteOver));
@@ -70,9 +70,9 @@ p.init = function (element, content) {
 	this.element.appendChild(this.spinner);
 
 	this.list = new List(
-			$.el(".community-list", this.element),
-			$.el(".community-list .item.renderer", this.element),
-			this
+		$.el(".community-list", this.element),
+		$.el(".community-list .item.renderer", this.element),
+		this
 	);
 
 	this._settingsChangeProxy = $.bind(this, this.handleSettingsChange);
@@ -218,15 +218,14 @@ p.handleFavoritesLoad = function (data) {
 p.onLoadClick = function (evt) {
 	var el = evt.target;
 	var type = '';
-
 	if ($.hasClass(el, ".expr")) {
 		type = "expr";
 	} else if ($.hasClass(el, ".source")) {
 		type = "source";
 	} else if ($.hasClass(el, ".all")) {
 		type = "all";
-	} else if ($.hasClass(el, ".subst")) {
-		type = "subst";
+	} else if ($.hasClass(el, ".tool")) {
+		type = this.list.selectedItem.state.tool;
 	}
 	this.insertContent(type);
 };
@@ -265,14 +264,16 @@ p.insertContent = function (type) {
 		this.docView.setFlags(flags);
 	} else if (type == "source") {
 		this.docView.setText(data.content);
-	} else if (type == "subst") {
-		this.docView.setSubstitution(data.replace);
-		this.docView.showSubstitution();
+	} else if (type == "list") {
+		this.docView.setState(data.state);
+		this.docView.showTool("list");
+	} else if (type == "replace") {
+		this.docView.setState(data.state);
+		this.docView.showTool("replace");
 	} else if (type == "all") {
 		if (ExpressionModel.id != data.id) {
 			ExpressionModel.setID(data.id);
-			this.docView.setState(data.state == null || data.state == "" ? {} : JSON.parse(data.state));
-			this.docView.populateAll(expression, flags, data.content, data.replace);
+			this.docView.populateAll(expression, flags, data.content, data.state);
 			ServerModel.trackVisit(data.id);
 		}
 	}
@@ -333,12 +334,15 @@ p.onListChange = function (evt) {
 
 	this.updateFavorite(data.id);
 
-	if (data.replace) {
-		this.substitution.innerHTML = TextUtils.htmlSafe(data.replace);
-		$.removeClass(this.substitutionWrap, "hidden");
+	if (data.state && data.state.tool && data.state[data.state.tool]) {
+		this.toolContent.innerHTML = TextUtils.htmlSafe(data.state[data.state.tool]);
+		this.toolTitle.innerText = data.state.tool.substr(0, 1).toUpperCase() + data.state.tool.substr(1);
+
+		$.removeClass(this.toolWrap, "hidden");
 	} else {
-		$.addClass(this.substitutionWrap, "hidden");
+		$.addClass(this.toolWrap, "hidden");
 	}
+
 
 	if (this._visible) {
 		$.removeClass(this.element, "hidden");
